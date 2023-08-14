@@ -144,13 +144,20 @@ src[1]
 ```
 The line (2) is a predicate n < 0. Since the next line taken is line (5), we know that at this point in the execution path, the predicate was false.
 
+```python
 src[2], src[3], src[4], src[5]
 ('    if n < 0:', '        return None', '', '    if n == 0:')
+```
 We notice that this is one of the predicates where the true branch was not taken. How do we generate a value that takes the true branch here? One way is to use symbolic variables to represent the input, encode the constraint, and use an SMT Solver to solve the negation of the constraint.
 
+## Solving Constrains
+To solve these constraints, one can use a Satisfiability Modulo Theories (SMT) solver. An SMT solver is built on top of a SATISFIABILITY (SAT) solver. A SAT solver is being used to check whether boolean formulas in first order logic (e.g. (a | b ) & (~a | ~b)) can be satisfied using any assignments for the variables (e.g a = true, b = false). An SMT solver extends these SAT solvers to specific background theories.
 
+We use the SMT solver [Z3](https://github.com/Z3Prover/z3#readme) in this chapter.
 
-
+```python
+import z3
+```
 
 
 
