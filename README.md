@@ -151,7 +151,7 @@ src[2], src[3], src[4], src[5]
 We notice that this is one of the predicates where the true branch was not taken. How do we generate a value that takes the true branch here? One way is to use symbolic variables to represent the input, encode the constraint, and use an SMT Solver to solve the negation of the constraint.
 
 ## Solving Constrains
-To solve these constraints, one can use a Satisfiability Modulo Theories (SMT) solver. An SMT solver is built on top of a SATISFIABILITY (SAT) solver. A SAT solver is being used to check whether boolean formulas in first order logic (e.g. (a | b ) & (~a | ~b)) can be satisfied using any assignments for the variables (e.g a = true, b = false). An SMT solver extends these SAT solvers to specific background theories.
+To solve these constraints, one can use a Satisfiability Modulo Theories (SMT) solver. An SMT solver is built on top of a SATISFIABILITY (SAT) solver. A SAT solver is being used to check whether boolean formulas in first order logic (`e.g. (a | b ) & (~a | ~b)`) can be satisfied using any assignments for the variables (e.g a = true, b = false). An SMT solver extends these SAT solvers to specific background theories.
 
 We use the SMT solver [Z3](https://github.com/Z3Prover/z3#readme) in this chapter.
 
@@ -159,6 +159,27 @@ We use the SMT solver [Z3](https://github.com/Z3Prover/z3#readme) in this chapte
 import z3
 ```
 
+To encode constraints, we need symbolic variables. Here, we make `zn` a placeholder for the Z3 symbolic integer variable `n`.
+```python
+zn = z3.Int('n')
+```
+Remember the constraint `(n < 0)` from line 2 in `factorial()?` We can now encode the constraint as follows.
+```python
+zn < 0
+n < 0
+```
+With input `5`, the execution took the `else` branch on the predicate `n < 0`. We can express this observation as follows.
+```python
+z3.Not(zn < 0)
+¬(n < 0)
+```
+
+The `z3.solve()` method checks if the constraints are satisfiable; if they are, it also provides values for variables such that the constraints are satisfied. For example, we can ask Z3 for an input that will take the else branch as follows:
+```python
+z3.solve(z3.Not(zn < 0))
+[n = 0]
+```
+This is a solution (albeit a trivial one). SMT solvers can be used to solve much harder problems. 
 
 
 
